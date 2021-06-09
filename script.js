@@ -77,9 +77,25 @@ class Tonneau {
 
   // TODO
   detectionSurface = () => {
+    
+    platforms.forEach(platform => {
+      // We normalize the position of the platform
+      const pLeftSide = platform.left ? platform.left : widthScreen - platform.right - platform.width;
+      const pRightSide = platform.left ? platform.left + platform.width : widthScreen - platform.right;
 
-    // If surface detected
-    //clearInterval(this.intervalID);
+      // We define the possible landing area for the left side of the barrel
+      const widthBarrel = 30;
+      const startLandingArea = pLeftSide - widthBarrel;
+      const endLandingArea = pRightSide;
+
+      const isInsideArea = this.posX > startLandingArea && this.posX < endLandingArea;
+      const inVerticalContact = platform.top - (this.posY + 22) <= 0;
+
+      if (isInsideArea && inVerticalContact) {
+        clearInterval(this.intervalID);
+      }
+      
+    })
   }
 
 }
@@ -89,7 +105,7 @@ function generateTonneau() {
     const randomX = Math.floor(Math.random() * widthScreen);
     const newT = new Tonneau(randomX);
     screen.appendChild(newT.getT());
-  }, 2000);
+  }, 500);
 }
 
 // Append the platform
